@@ -1,0 +1,387 @@
+/* RIFT - Web Proxy UI Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #00d4ff;
+  --secondary-color: #1a1a2e;
+  --accent-color: #16213e;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --border-color: #2d2d44;
+  --success-color: #00ff88;
+  --danger-color: #ff4444;
+  --transition-speed: 0.3s;
+}
+
+body {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* LOGO & BRANDING */
+svg {
+  stroke: var(--primary-color);
+  fill: none;
+}
+
+svg:hover {
+  stroke: var(--text-primary);
+  transition: stroke var(--transition-speed);
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 80px;
+  height: 100vh;
+  background: var(--secondary-color);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  z-index: 1000;
+}
+
+#rift-root {
+  display: flex;
+  height: 100vh;
+}
+
+/* MAIN CONTENT AREA */
+#rift-root > div:last-child {
+  flex: 1;
+  margin-left: 80px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAVIGATION BUTTON */
+.rift-nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 24px;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background var(--transition-speed), color var(--transition-speed);
+}
+
+.rift-nav-btn:hover {
+  background: var(--accent-color);
+  color: var(--primary-color);
+}
+
+/* INPUT FIELDS */
+.rift-input {
+  background: var(--accent-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+  transition: border-color var(--transition-speed), background var(--transition-speed);
+}
+
+.rift-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: rgba(0, 212, 255, 0.05);
+}
+
+.rift-input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* BUTTONS */
+.rift-btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), #00a8cc);
+  border: none;
+  color: var(--secondary-color);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  font-size: 14px;
+}
+
+.rift-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+}
+
+.rift-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 10px rgba(0, 212, 255, 0.2);
+}
+
+button {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: color var(--transition-speed);
+}
+
+button:hover {
+  color: var(--primary-color);
+}
+
+/* TAGS */
+.rift-tag {
+  display: inline-block;
+  background: var(--accent-color);
+  border: 1px solid var(--border-color);
+  color: var(--primary-color);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ANIMATIONS */
+.rift-anim {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* TOP BAR */
+.top-bar {
+  background: var(--accent-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar span {
+  letter-spacing: 2px;
+  color: var(--primary-color);
+}
+
+.search-bar {
+  width: 300px;
+}
+
+/* SECTIONS */
+.rift-section {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px;
+  background: rgba(0, 212, 255, 0.02);
+}
+
+.setting-row {
+  margin: 15px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-row label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--primary-color);
+}
+
+.setting-row p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.setting-row div {
+  display: flex;
+  gap: 10px;
+}
+
+.setting-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+/* GRID CARDS */
+.grid-card {
+  background: var(--accent-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px;
+  min-height: 150px;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  cursor: pointer;
+}
+
+.grid-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+  border-color: var(--primary-color);
+}
+
+.grid-card.wide {
+  min-height: 200px;
+}
+
+/* STATUS INDICATOR */
+div[title="Proxy connected"] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid var(--success-color);
+}
+
+div[title="Proxy connected"] div {
+  width: 8px;
+  height: 8px;
+  background: var(--success-color);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+div[title="Proxy connected"] span {
+  color: var(--success-color);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* PANIC BUTTON */
+button[title="Panic — close tab"] {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  font-size: 20px;
+  transition: background var(--transition-speed), transform var(--transition-speed);
+}
+
+button[title="Panic — close tab"]:hover {
+  background: #ff2222;
+  transform: scale(1.1);
+}
+
+/* SEARCH GLOW */
+.rift-search-glow {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.05));
+  border: 2px solid var(--primary-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.rift-search-glow div {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.rift-search-glow input {
+  width: 100%;
+}
+
+.rift-search-glow button {
+  margin-top: 10px;
+}
+
+/* QUICK ACCESS */
+div > div > span:has-text("Quick Access") {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+/* CONTENT SECTIONS */
+div.rift-anim {
+  display: none;
+  animation: fadeIn var(--transition-speed);
+}
+
+div.rift-anim.active {
+  display: block;
+  animation: slideIn var(--transition-speed);
+}
+
+/* NO RESULTS */
+div > div:has-text("No results"),
+div > div:has-text("No active session") {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    padding: 10px 0;
+  }
+
+  #rift-root > div:last-child {
+    margin-left: 60px;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .rift-section {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .grid-card {
+    margin: 10px;
+  }
+}
