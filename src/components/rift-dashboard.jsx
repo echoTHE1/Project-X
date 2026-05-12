@@ -1,0 +1,965 @@
+import React, { useState, useEffect, useRef } from "react";
+
+/* ── Font Injection ─────────────────────────────────────────────────────── */
+const FONT_URLS = [
+  "https://cdn.jsdelivr.net/npm/@fontsource/rajdhani@5/400.css",
+  "https://cdn.jsdelivr.net/npm/@fontsource/rajdhani@5/600.css",
+  "https://cdn.jsdelivr.net/npm/@fontsource/rajdhani@5/700.css",
+  "https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/400.css",
+  "https://cdn.jsdelivr.net/npm/@fontsource/nunito-sans@5/400.css",
+  "https://cdn.jsdelivr.net/npm/@fontsource/nunito-sans@5/600.css",
+];
+
+/* ── Data ───────────────────────────────────────────────────────────────── */
+const GAMES = [
+  { id:1,  name:"Slope",          cat:"action",   hex:"#f59e0b", bg:"rgba(245,158,11,0.08)",  icon:"◈" },
+  { id:2,  name:"Cookie Clicker", cat:"idle",     hex:"#f97316", bg:"rgba(249,115,22,0.08)",  icon:"◉" },
+  { id:3,  name:"1v1.lol",        cat:"shooter",  hex:"#06b6d4", bg:"rgba(6,182,212,0.08)",   icon:"⊕" },
+  { id:4,  name:"Bloxd.io",       cat:"sandbox",  hex:"#8b5cf6", bg:"rgba(139,92,246,0.08)",  icon:"⬡" },
+  { id:5,  name:"Geometry Dash",  cat:"rhythm",   hex:"#ec4899", bg:"rgba(236,72,153,0.08)",  icon:"◆" },
+  { id:6,  name:"Tetris",         cat:"puzzle",   hex:"#3b82f6", bg:"rgba(59,130,246,0.08)",  icon:"▦" },
+  { id:7,  name:"2048",           cat:"puzzle",   hex:"#10b981", bg:"rgba(16,185,129,0.08)",  icon:"⊞" },
+  { id:8,  name:"Snake",          cat:"arcade",   hex:"#22c55e", bg:"rgba(34,197,94,0.08)",   icon:"⟳" },
+  { id:9,  name:"Chess",          cat:"strategy", hex:"#94a3b8", bg:"rgba(148,163,184,0.08)", icon:"♟" },
+  { id:10, name:"Krunker.io",     cat:"shooter",  hex:"#f59e0b", bg:"rgba(245,158,11,0.08)",  icon:"✦" },
+  { id:11, name:"Minecraft",      cat:"sandbox",  hex:"#84cc16", bg:"rgba(132,204,22,0.08)",  icon:"⬛" },
+  { id:12, name:"Among Us",       cat:"social",   hex:"#ef4444", bg:"rgba(239,68,68,0.08)",   icon:"◯" },
+  { id:13, name:"Agar.io",        cat:"arcade",   hex:"#06b6d4", bg:"rgba(6,182,212,0.08)",   icon:"⊙" },
+  { id:14, name:"Skribbl.io",     cat:"social",   hex:"#ec4899", bg:"rgba(236,72,153,0.08)",  icon:"✏" },
+  { id:15, name:"Paper.io",       cat:"arcade",   hex:"#8b5cf6", bg:"rgba(139,92,246,0.08)",  icon:"▣" },
+  { id:16, name:"Wordle",         cat:"puzzle",   hex:"#10b981", bg:"rgba(16,185,129,0.08)",  icon:"⬜" },
+];
+
+const APPS = [
+  { id:1,  name:"YouTube",    hex:"#ef4444", bg:"rgba(239,68,68,0.1)",    icon:"▶" },
+  { id:2,  name:"Discord",    hex:"#8b5cf6", bg:"rgba(139,92,246,0.1)",   icon:"◉" },
+  { id:3,  name:"Spotify",    hex:"#22c55e", bg:"rgba(34,197,94,0.1)",    icon:"♪" },
+  { id:4,  name:"Reddit",     hex:"#f97316", bg:"rgba(249,115,22,0.1)",   icon:"◈" },
+  { id:5,  name:"Twitter/X",  hex:"#94a3b8", bg:"rgba(148,163,184,0.1)", icon:"✕" },
+  { id:6,  name:"TikTok",     hex:"#ec4899", bg:"rgba(236,72,153,0.1)",   icon:"♫" },
+  { id:7,  name:"GitHub",     hex:"#94a3b8", bg:"rgba(148,163,184,0.1)", icon:"⬡" },
+  { id:8,  name:"Twitch",     hex:"#a855f7", bg:"rgba(168,85,247,0.1)",   icon:"◉" },
+  { id:9,  name:"Google",     hex:"#3b82f6", bg:"rgba(59,130,246,0.1)",   icon:"⊙" },
+  { id:10, name:"Netflix",    hex:"#ef4444", bg:"rgba(239,68,68,0.1)",    icon:"▶" },
+  { id:11, name:"Drive",      hex:"#f59e0b", bg:"rgba(245,158,11,0.1)",   icon:"△" },
+  { id:12, name:"Notion",     hex:"#94a3b8", bg:"rgba(148,163,184,0.1)", icon:"□" },
+];
+
+const GAME_CATS = ["all", "action", "shooter", "puzzle", "arcade", "sandbox", "idle", "rhythm", "strategy", "social"];
+
+const TRANSPORTS = [
+  { id:"uv",        label:"Ultraviolet",   desc:"Maximum compatibility across sites",  badge:"STABLE" },
+  { id:"scramjet",  label:"Scramjet",      desc:"Faster JS rewriting, lower latency",  badge:"FAST"   },
+];
+
+const THEMES_DATA = [
+  { id:"rift-dark",  label:"RIFT Dark",    primary:"#f59e0b", note:"Default — deep night, amber accents" },
+  { id:"neon-cyan",  label:"Neon Cyan",    primary:"#06b6d4", note:"Electric cyan highlights, dark hull" },
+  { id:"blood-red",  label:"Blood Mode",   primary:"#ef4444", note:"High-contrast crimson alert scheme" },
+  { id:"matrix",     label:"Matrix",       primary:"#22c55e", note:"Classic terminal green aesthetic" },
+];
+
+const RECENT = ["youtube.com", "github.com", "reddit.com"];
+
+/* ── Inject Global CSS & Fonts ──────────────────────────────────────────── */
+function useGlobalStyles(accent) {
+  useEffect(() => {
+    FONT_URLS.forEach(href => {
+      if (!document.querySelector(`link[href="${href}"]`)) {
+        const l = document.createElement("link");
+        l.rel = "stylesheet"; l.href = href;
+        document.head.appendChild(l);
+      }
+    });
+    let style = document.getElementById("rift-global");
+    if (!style) { style = document.createElement("style"); style.id = "rift-global"; document.head.appendChild(style); }
+    style.textContent = `
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root { --accent: ${accent}; --accent-glow: ${accent}26; }
+      body { background: #080b10 !important; }
+      #rift-root { min-height: 100vh; }
+      ::-webkit-scrollbar { width: 4px; height: 4px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #1e2a3a; border-radius: 2px; }
+      ::-webkit-scrollbar-thumb:hover { background: #2d3f52; }
+      @keyframes rift-fade { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+      @keyframes rift-pulse { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+      @keyframes rift-spin { to { transform: rotate(360deg); } }
+      @keyframes rift-glow-in { from{box-shadow:0 0 0 0 var(--accent-glow);} to{box-shadow:0 0 20px 2px var(--accent-glow);} }
+      @keyframes rift-scanline {
+        0%{background-position:0 0;} 100%{background-position:0 100%;}
+      }
+      .rift-anim { animation: rift-fade 0.22s ease both; }
+      .rift-card-hover {
+        transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+      }
+      .rift-card-hover:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 16px var(--accent-glow);
+      }
+      .rift-nav-btn {
+        transition: color 0.15s, background 0.15s;
+      }
+      .rift-nav-btn:hover { background: rgba(255,255,255,0.05) !important; }
+      .rift-input:focus { outline: none; border-color: var(--accent) !important; box-shadow: 0 0 0 2px var(--accent-glow); }
+      .rift-btn-primary {
+        background: var(--accent); color: #080b10; font-weight: 700;
+        border: none; cursor: pointer; transition: filter 0.15s, transform 0.1s;
+        font-family: 'Rajdhani', sans-serif; letter-spacing: 0.04em;
+      }
+      .rift-btn-primary:hover { filter: brightness(1.12); }
+      .rift-btn-primary:active { transform: scale(0.97); }
+      .rift-tag {
+        font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        padding: 2px 7px; border-radius: 3px;
+      }
+      .rift-cloak-toggle {
+        width: 42px; height: 24px; border-radius: 12px; border: 1px solid #2d3f52;
+        background: #0f141d; cursor: pointer; position: relative; transition: background 0.2s;
+        appearance: none; -webkit-appearance: none; flex-shrink: 0;
+      }
+      .rift-cloak-toggle::after {
+        content: ''; position: absolute; top: 3px; left: 3px;
+        width: 16px; height: 16px; border-radius: 50%; background: #2d3f52;
+        transition: transform 0.2s, background 0.2s;
+      }
+      .rift-cloak-toggle:checked { background: var(--accent-glow); border-color: var(--accent); }
+      .rift-cloak-toggle:checked::after { transform: translateX(18px); background: var(--accent); }
+      .rift-search-glow:focus-within {
+        box-shadow: 0 0 0 1.5px var(--accent), 0 0 24px var(--accent-glow);
+      }
+      .rift-chip {
+        cursor: pointer; transition: all 0.15s; border: 1px solid #1e2a3a;
+        border-radius: 4px; padding: 4px 12px;
+        font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+        background: transparent; color: #64748b;
+      }
+      .rift-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+      .rift-chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+      .rift-transport {
+        border: 1px solid #1e2a3a; border-radius: 8px; padding: 14px 16px; cursor: pointer;
+        transition: all 0.15s; background: #0f141d;
+      }
+      .rift-transport:hover { border-color: #2d3f52; }
+      .rift-transport.selected { border-color: var(--accent); background: var(--accent-glow); }
+    `;
+  }, [accent]);
+}
+
+/* ── RIFT Logo ──────────────────────────────────────────────────────────── */
+const RiftLogo = ({ accent, compact }) => {
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap: compact ? 0 : 10, flexDirection: compact ? "column" : "row" }}>
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="15,1 29,15 15,29 1,15" stroke={accent} strokeWidth="1.5" fill={`${accent}14`}/>
+        <polygon points="15,8 22,15 15,22 8,15" fill={accent} opacity="0.4"/>
+        <line x1="15" y1="1" x2="15" y2="29" stroke={accent} strokeWidth="0.5" opacity="0.3"/>
+        <line x1="1" y1="15" x2="29" y2="15" stroke={accent} strokeWidth="0.5" opacity="0.3"/>
+        <circle cx="15" cy="15" r="2" fill={accent}/>
+      </svg>
+      {!compact && (
+        <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:22, fontWeight:700, color:"#e2e8f0", letterSpacing:"0.12em" }}>
+          RIFT
+        </span>
+      )}
+    </div>
+  );
+};
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+const NAV_ITEMS = [
+  { id:"home",     icon:"⊙", label:"Home"     },
+  { id:"browse",   icon:"◈", label:"Browse"   },
+  { id:"games",    icon:"◆", label:"Games"    },
+  { id:"apps",     icon:"⬡", label:"Apps"     },
+  { id:"settings", icon:"◎", label:"Settings" },
+];
+
+const Sidebar = ({ view, setView, accent, panicKey }) => {
+  const [panicHeld, setPanicHeld] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (panicKey && e.key.toLowerCase() === panicKey.toLowerCase()) {
+        window.location.href = "https://classroom.google.com";
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [panicKey]);
+
+  return (
+    <div style={{
+      width:64, minHeight:"100vh", background:"rgba(10,13,20,0.97)",
+      borderRight:"1px solid #1a2433", display:"flex", flexDirection:"column",
+      alignItems:"center", padding:"14px 0", gap:4, flexShrink:0, position:"sticky", top:0, zIndex:20
+    }}>
+      <div style={{ marginBottom:16, cursor:"pointer" }} onClick={() => setView("home")}>
+        <RiftLogo accent={accent} compact />
+      </div>
+
+      <div style={{ width:28, height:1, background:"#1e2a3a", marginBottom:8 }}/>
+
+      {NAV_ITEMS.map(item => {
+        const active = view === item.id;
+        return (
+          <button key={item.id} onClick={() => setView(item.id)} className="rift-nav-btn"
+            title={item.label}
+            style={{
+              width:44, height:44, borderRadius:8, border:"none", cursor:"pointer",
+              background: active ? `${accent}18` : "transparent",
+              color: active ? accent : "#475569",
+              display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+              gap:2, position:"relative",
+            }}>
+            {active && (
+              <div style={{
+                position:"absolute", left:0, top:"50%", transform:"translateY(-50%)",
+                width:3, height:20, background:accent, borderRadius:"0 2px 2px 0"
+              }}/>
+            )}
+            <span style={{ fontSize:18, lineHeight:1 }}>{item.icon}</span>
+            <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:9, fontWeight:700,
+              letterSpacing:"0.08em", textTransform:"uppercase" }}>
+              {item.label}
+            </span>
+          </button>
+        );
+      })}
+
+      <div style={{ flex:1 }}/>
+
+      <div style={{ width:28, height:1, background:"#1e2a3a", marginBottom:8 }}/>
+
+      <div title="Proxy connected" style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, marginBottom:4 }}>
+        <div style={{ width:8, height:8, borderRadius:"50%", background:"#22c55e",
+          animation:"rift-pulse 2s ease-in-out infinite", boxShadow:"0 0 6px #22c55e80" }}/>
+        <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:8, color:"#22c55e",
+          fontWeight:700, letterSpacing:"0.06em", textTransform:"uppercase" }}>LIVE</span>
+      </div>
+
+      <button
+        title="Panic — close tab"
+        onMouseDown={() => setPanicHeld(true)}
+        onMouseUp={() => setPanicHeld(false)}
+        onMouseLeave={() => setPanicHeld(false)}
+        onClick={() => { window.location.href = "https://classroom.google.com"; }}
+        style={{
+          width:38, height:38, borderRadius:8, border:"1px solid #2d1a1a",
+          background: panicHeld ? "#ef444425" : "transparent",
+          color:"#ef4444", cursor:"pointer", display:"flex", alignItems:"center",
+          justifyContent:"center", fontSize:16, transition:"all 0.15s",
+        }}>
+        ✕
+      </button>
+    </div>
+  );
+};
+
+/* ── Top Bar ────────────────────────────────────────────────────────────── */
+const TopBar = ({ title, subtitle, accent, children }) => {
+  return (
+    <div style={{
+      padding:"20px 28px 0", display:"flex", alignItems:"flex-end",
+      justifyContent:"space-between", gap:16, flexWrap:"wrap"
+    }}>
+      <div>
+        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
+          <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:26, fontWeight:700,
+            color:"#e2e8f0", letterSpacing:"0.05em" }}>{title}</span>
+          {subtitle && (
+            <span className="rift-tag" style={{ background:`${accent}18`, color:accent }}>
+              {subtitle}
+            </span>
+          )}
+        </div>
+        <div style={{ width:36, height:2, background:accent, borderRadius:1 }}/>
+      </div>
+      {children}
+    </div>
+  );
+};
+
+/* ── Search Bar ─────────────────────────────────────────────────────────── */
+const SearchBar = ({ value, onChange, placeholder, size="normal" }) => {
+  return (
+    <div style={{ position:"relative", width:"100%" }}>
+      <span style={{
+        position:"absolute", left:14, top:"50%", transform:"translateY(-50%)",
+        color:"#475569", fontSize:15, pointerEvents:"none", lineHeight:1
+      }}>⊙</span>
+      <input
+        className="rift-input"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          width:"100%",
+          height: size === "large" ? 50 : 38,
+          background:"#0f141d",
+          border:"1px solid #1e2a3a",
+          borderRadius:8,
+          color:"#e2e8f0",
+          fontSize: size === "large" ? 16 : 14,
+          paddingLeft:38,
+          paddingRight:16,
+          fontFamily:"'Nunito Sans', sans-serif",
+        }}
+      />
+    </div>
+  );
+};
+
+/* ── Grid Card ──────────────────────────────────────────────────────────── */
+const GridCard = ({ item, onClick, wide }) => {
+  return (
+    <button
+      onClick={() => onClick && onClick(item)}
+      className="rift-card-hover"
+      style={{
+        background:"#0f141d",
+        border:"1px solid #1a2433",
+        borderRadius:10,
+        padding: wide ? "14px 16px" : "16px 14px",
+        cursor:"pointer",
+        display:"flex",
+        flexDirection: wide ? "row" : "column",
+        alignItems: wide ? "center" : "center",
+        gap: wide ? 14 : 10,
+        textAlign: wide ? "left" : "center",
+        width:"100%",
+      }}>
+      <div style={{
+        width: wide ? 42 : 48,
+        height: wide ? 42 : 48,
+        borderRadius:10,
+        background: item.bg,
+        border:`1px solid ${item.hex}30`,
+        display:"flex", alignItems:"center", justifyContent:"center",
+        fontSize: wide ? 18 : 22,
+        color: item.hex,
+        flexShrink:0,
+        fontFamily:"monospace",
+      }}>
+        {item.icon}
+      </div>
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{
+          fontFamily:"'Rajdhani', sans-serif",
+          fontSize: wide ? 15 : 14,
+          fontWeight:600,
+          color:"#e2e8f0",
+          letterSpacing:"0.02em",
+          whiteSpace:"nowrap",
+          overflow:"hidden",
+          textOverflow:"ellipsis",
+        }}>
+          {item.name}
+        </div>
+        {item.cat && (
+          <div style={{
+            fontFamily:"'Rajdhani', sans-serif",
+            fontSize:11,
+            fontWeight:700,
+            color:"#475569",
+            textTransform:"uppercase",
+            letterSpacing:"0.06em",
+            marginTop:2,
+          }}>
+            {item.cat}
+          </div>
+        )}
+      </div>
+      {wide && (
+        <span style={{ color:"#2d3f52", fontSize:14 }}>→</span>
+      )}
+    </button>
+  );
+};
+
+/* ── HOME VIEW ──────────────────────────────────────────────────────────── */
+const HomeView = ({ accent, transport, setView, onProxyUrl }) => {
+  const [url, setUrl] = useState("");
+  const [focused, setFocused] = useState(false);
+  const inputRef = useRef();
+
+  const handleGo = () => {
+    if (!url.trim()) return;
+    let clean = url.trim();
+    if (!clean.includes(".") && !clean.startsWith("http")) {
+      clean = `https://www.google.com/search?q=${encodeURIComponent(clean)}`;
+    } else if (!clean.startsWith("http")) {
+      clean = "https://" + clean;
+    }
+    onProxyUrl(clean);
+    setView("browse");
+  };
+
+  return (
+    <div className="rift-anim" style={{ padding:"0 28px 28px", flex:1 }}>
+      <div style={{
+        paddingTop:56, paddingBottom:48, textAlign:"center",
+        maxWidth:680, margin:"0 auto",
+      }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:14, marginBottom:16 }}>
+          <RiftLogo accent={accent} />
+        </div>
+        <p style={{
+          fontFamily:"'Nunito Sans', sans-serif",
+          fontSize:15, color:"#475569", marginBottom:36, letterSpacing:"0.01em"
+        }}>
+          Private. Fast. Open. — by <span style={{ color:accent, fontFamily:"'Rajdhani', sans-serif", fontWeight:700 }}>Colt</span>
+        </p>
+
+        <div
+          className="rift-search-glow"
+          style={{
+            display:"flex", gap:0, borderRadius:10,
+            border:`1px solid ${focused ? accent : "#1e2a3a"}`,
+            background:"#0f141d", overflow:"hidden",
+            transition:"border-color 0.15s",
+          }}>
+          <div style={{
+            padding:"0 14px", display:"flex", alignItems:"center",
+            borderRight:"1px solid #1e2a3a", flexShrink:0,
+          }}>
+            <span className="rift-tag" style={{ background:`${accent}18`, color:accent }}>
+              {transport.toUpperCase()}
+            </span>
+          </div>
+
+          <input
+            ref={inputRef}
+            className="rift-input"
+            value={url}
+            onChange={e => setUrl(e.target.value)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            onKeyDown={e => e.key === "Enter" && handleGo()}
+            placeholder="Search or enter a URL to proxy..."
+            style={{
+              flex:1, height:54, background:"transparent", border:"none",
+              color:"#e2e8f0", fontSize:16, padding:"0 18px",
+              fontFamily:"'JetBrains Mono', monospace",
+              boxShadow:"none",
+            }}
+          />
+
+          <button className="rift-btn-primary" onClick={handleGo} style={{
+            padding:"0 24px", height:54, borderRadius:0, fontSize:14, letterSpacing:"0.1em"
+          }}>
+            GO
+          </button>
+        </div>
+
+        {RECENT.length > 0 && (
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:14, justifyContent:"center", flexWrap:"wrap" }}>
+            <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:11, fontWeight:700,
+              color:"#2d3f52", textTransform:"uppercase", letterSpacing:"0.08em" }}>Recent:</span>
+            {RECENT.map(r => (
+              <button key={r} onClick={() => { setUrl(r); setTimeout(() => inputRef.current?.focus(), 50); }}
+                style={{
+                  background:"transparent", border:"1px solid #1e2a3a", borderRadius:4,
+                  color:"#475569", cursor:"pointer", padding:"3px 10px",
+                  fontFamily:"'JetBrains Mono', monospace", fontSize:11,
+                  transition:"all 0.12s",
+                }}
+                onMouseEnter={e => { e.target.style.borderColor=accent; e.target.style.color=accent; }}
+                onMouseLeave={e => { e.target.style.borderColor="#1e2a3a"; e.target.style.color="#475569"; }}>
+                {r}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div style={{ maxWidth:960, margin:"0 auto" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:16 }}>
+          <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:12, fontWeight:700,
+            color:"#2d3f52", textTransform:"uppercase", letterSpacing:"0.1em" }}>Quick Access</span>
+          <div style={{ flex:1, height:1, background:"#1a2433" }}/>
+        </div>
+
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20 }}>
+          <div>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+              <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:13, fontWeight:600,
+                color:"#64748b", letterSpacing:"0.04em", textTransform:"uppercase" }}>Games</span>
+              <button onClick={() => setView("games")} style={{
+                background:"transparent", border:"none", cursor:"pointer",
+                fontFamily:"'Rajdhani', sans-serif", fontSize:11, fontWeight:700,
+                color:accent, letterSpacing:"0.06em", textTransform:"uppercase"
+              }}>
+                View all →
+              </button>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              {GAMES.slice(0,4).map(g => (
+                <GridCard key={g.id} item={g} wide onClick={() => setView("games")} />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+              <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:13, fontWeight:600,
+                color:"#64748b", letterSpacing:"0.04em", textTransform:"uppercase" }}>Apps</span>
+              <button onClick={() => setView("apps")} style={{
+                background:"transparent", border:"none", cursor:"pointer",
+                fontFamily:"'Rajdhani', sans-serif", fontSize:11, fontWeight:700,
+                color:accent, letterSpacing:"0.06em", textTransform:"uppercase"
+              }}>
+                View all →
+              </button>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              {APPS.slice(0,4).map(a => (
+                <GridCard key={a.id} item={a} wide onClick={() => setView("apps")} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── BROWSE VIEW ────────────────────────────────────────────────────────── */
+const BrowseView = ({ accent, transport, proxyUrl, setProxyUrl }) => {
+  const [inputUrl, setInputUrl] = useState(proxyUrl || "");
+  const [loading, setLoading] = useState(false);
+  const [secure, setSecure] = useState(proxyUrl?.startsWith("https://") || false);
+
+  const navigate = () => {
+    let clean = inputUrl.trim();
+    if (!clean) return;
+    if (!clean.includes(".") && !clean.startsWith("http")) {
+      clean = `https://www.google.com/search?q=${encodeURIComponent(clean)}`;
+    } else if (!clean.startsWith("http")) {
+      clean = "https://" + clean;
+    }
+    setSecure(clean.startsWith("https://"));
+    setProxyUrl(clean);
+    setLoading(true);
+    setTimeout(() => setLoading(false), 1200);
+  };
+
+  return (
+    <div className="rift-anim" style={{ display:"flex", flexDirection:"column", flex:1, padding:"20px 28px 28px" }}>
+      <TopBar title="BROWSE" accent={accent} />
+
+      <div style={{
+        display:"flex", gap:8, marginTop:20, marginBottom:16,
+        background:"#0f141d", border:"1px solid #1e2a3a", borderRadius:10, padding:"8px 12px",
+        alignItems:"center",
+      }}>
+        {["←","→","↺"].map((sym, i) => (
+          <button key={i} style={{
+            width:30, height:30, borderRadius:6, border:"1px solid #1e2a3a",
+            background:"transparent", color:"#475569", cursor:"pointer", fontSize:14,
+            flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center",
+          }}>
+            {sym}
+          </button>
+        ))}
+
+        <span style={{ color: secure ? "#22c55e" : "#f59e0b", fontSize:13, flexShrink:0 }}>
+          {secure ? "🔒" : "⚠"}
+        </span>
+
+        <input
+          className="rift-input"
+          value={inputUrl}
+          onChange={e => setInputUrl(e.target.value)}
+          onKeyDown={e => e.key==="Enter" && navigate()}
+          placeholder="Enter URL or search…"
+          style={{
+            flex:1, height:30, background:"transparent", border:"none",
+            color:"#e2e8f0", fontSize:13, fontFamily:"'JetBrains Mono', monospace",
+            boxShadow:"none",
+          }}
+        />
+
+        <span className="rift-tag" style={{ background:`${accent}18`, color:accent, flexShrink:0 }}>
+          {transport.toUpperCase()}
+        </span>
+
+        <button className="rift-btn-primary" onClick={navigate}
+          style={{ padding:"0 16px", height:30, borderRadius:6, fontSize:12 }}>
+          GO
+        </button>
+      </div>
+
+      <div style={{
+        flex:1, minHeight:400, borderRadius:10, border:"1px solid #1e2a3a",
+        background:"#0a0e15", display:"flex", alignItems:"center", justifyContent:"center",
+        overflow:"hidden", position:"relative",
+      }}>
+        {loading && (
+          <div style={{
+            position:"absolute", top:0, left:0, right:0, height:2,
+            background:`linear-gradient(90deg, transparent, ${accent}, transparent)`,
+            animation:"rift-spin 0.8s linear infinite",
+          }}/>
+        )}
+        {proxyUrl ? (
+          <div style={{ textAlign:"center", padding:40 }}>
+            <div style={{ fontSize:48, marginBottom:16 }}>◈</div>
+            <div style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:18, fontWeight:600,
+              color:"#e2e8f0", marginBottom:8 }}>Proxying via {transport.toUpperCase()}</div>
+            <div style={{ fontFamily:"'JetBrains Mono', monospace", fontSize:13, color:accent, marginBottom:16 }}>
+              {proxyUrl}
+            </div>
+            <div style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:13, color:"#475569", maxWidth:360 }}>
+              In a live deployment, the proxied page would render here inside the RIFT service worker.
+            </div>
+          </div>
+        ) : (
+          <div style={{ textAlign:"center", color:"#2d3f52" }}>
+            <div style={{ fontSize:56, marginBottom:12, opacity:0.5 }}>◈</div>
+            <div style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:16, fontWeight:600,
+              letterSpacing:"0.06em", textTransform:"uppercase" }}>No active session</div>
+            <div style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:13, marginTop:6 }}>
+              Enter a URL above to start browsing
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ── GAMES VIEW ─────────────────────────────────────────────────────────── */
+const GamesView = ({ accent }) => {
+  const [search, setSearch] = useState("");
+  const [cat, setCat] = useState("all");
+
+  const filtered = GAMES.filter(g => {
+    const matchSearch = g.name.toLowerCase().includes(search.toLowerCase());
+    const matchCat = cat === "all" || g.cat === cat;
+    return matchSearch && matchCat;
+  });
+
+  return (
+    <div className="rift-anim" style={{ padding:"0 28px 28px", flex:1 }}>
+      <TopBar title="GAMES" subtitle={`${GAMES.length} TITLES`} accent={accent}>
+        <div style={{ width:260 }}>
+          <SearchBar value={search} onChange={setSearch} placeholder="Search games…" />
+        </div>
+      </TopBar>
+
+      <div style={{
+        display:"flex", gap:6, marginTop:16, marginBottom:20,
+        overflowX:"auto", paddingBottom:4,
+      }}>
+        {GAME_CATS.map(c => (
+          <button key={c} className={`rift-chip ${cat===c?"active":""}`}
+            onClick={() => setCat(c)}>
+            {c === "all" ? "All" : c}
+          </button>
+        ))}
+      </div>
+
+      {filtered.length === 0 ? (
+        <div style={{ textAlign:"center", padding:60, color:"#2d3f52" }}>
+          <div style={{ fontSize:36, marginBottom:10 }}>◯</div>
+          <div style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:15, fontWeight:600,
+            textTransform:"uppercase", letterSpacing:"0.08em" }}>No results</div>
+        </div>
+      ) : (
+        <div style={{
+          display:"grid",
+          gridTemplateColumns:"repeat(auto-fill, minmax(160px, 1fr))",
+          gap:12,
+        }}>
+          {filtered.map(g => <GridCard key={g.id} item={g} />)}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ── APPS VIEW ──────────────────────────────────────────────────────────── */
+const AppsView = ({ accent }) => {
+  const [search, setSearch] = useState("");
+
+  const filtered = APPS.filter(a =>
+    a.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="rift-anim" style={{ padding:"0 28px 28px", flex:1 }}>
+      <TopBar title="APPS" subtitle={`${APPS.length} SERVICES`} accent={accent}>
+        <div style={{ width:260 }}>
+          <SearchBar value={search} onChange={setSearch} placeholder="Search apps…" />
+        </div>
+      </TopBar>
+
+      <div style={{ marginTop:24 }}>
+        <div style={{
+          display:"grid",
+          gridTemplateColumns:"repeat(auto-fill, minmax(140px, 1fr))",
+          gap:12,
+        }}>
+          {filtered.map(a => <GridCard key={a.id} item={a} />)}
+        </div>
+      </div>
+
+      {filtered.length === 0 && (
+        <div style={{ textAlign:"center", padding:60, color:"#2d3f52" }}>
+          <div style={{ fontSize:36, marginBottom:10 }}>◯</div>
+          <div style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:15, fontWeight:600,
+            textTransform:"uppercase", letterSpacing:"0.08em" }}>No results</div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ── SETTINGS VIEW ──────────────────────────────────────────────────────── */
+const SettingsView = ({ accent, transport, setTransport, theme, setTheme, cloak, setCloak, panicKey, setPanicKey }) => {
+  const [localTitle, setLocalTitle] = useState(cloak.title);
+  const [localBlank, setLocalBlank] = useState(cloak.aboutBlank);
+  const [localPanic, setLocalPanic] = useState(panicKey);
+
+  const saveCloak = () => {
+    setCloak({ ...cloak, title: localTitle, aboutBlank: localBlank });
+    if (localTitle) document.title = localTitle;
+  };
+  const savePanic = () => setPanicKey(localPanic);
+
+  const Section = ({ title, children }) => (
+    <div style={{
+      background:"#0f141d", border:"1px solid #1a2433",
+      borderRadius:12, padding:"20px 24px", marginBottom:16,
+    }}>
+      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:18 }}>
+        <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:14, fontWeight:700,
+          color:accent, textTransform:"uppercase", letterSpacing:"0.1em" }}>{title}</span>
+        <div style={{ flex:1, height:1, background:"#1a2433" }}/>
+      </div>
+      {children}
+    </div>
+  );
+
+  const SettingRow = ({ label, desc, children }) => (
+    <div style={{
+      display:"flex", alignItems:"center", justifyContent:"space-between",
+      padding:"12px 0", borderBottom:"1px solid #0d1520", gap:16,
+    }}>
+      <div style={{ flex:1 }}>
+        <div style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:14,
+          fontWeight:600, color:"#c8d4e0", marginBottom:2 }}>{label}</div>
+        {desc && <div style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:12, color:"#475569" }}>{desc}</div>}
+      </div>
+      {children}
+    </div>
+  );
+
+  return (
+    <div className="rift-anim" style={{ padding:"0 28px 28px", flex:1 }}>
+      <TopBar title="SETTINGS" accent={accent} />
+      <div style={{ marginTop:24, maxWidth:760 }}>
+
+        <Section title="Tab Cloaking">
+          <SettingRow label="About:Blank Cloaking"
+            desc="Opens proxy in an about:blank window to hide the URL">
+            <input type="checkbox" className="rift-cloak-toggle"
+              checked={localBlank}
+              onChange={e => setLocalBlank(e.target.checked)}/>
+          </SettingRow>
+          <SettingRow label="Custom Tab Title"
+            desc="Override the browser tab title to disguise the page">
+            <div style={{ display:"flex", gap:8 }}>
+              <input
+                className="rift-input"
+                value={localTitle}
+                onChange={e => setLocalTitle(e.target.value)}
+                placeholder="e.g. Google Classroom"
+                style={{
+                  width:200, height:34, background:"#080b10",
+                  border:"1px solid #1e2a3a", borderRadius:6,
+                  color:"#e2e8f0", fontSize:13, padding:"0 12px",
+                  fontFamily:"'Nunito Sans', sans-serif",
+                }}
+              />
+              <button className="rift-btn-primary" onClick={saveCloak}
+                style={{ padding:"0 14px", height:34, borderRadius:6, fontSize:12 }}>
+                APPLY
+              </button>
+            </div>
+          </SettingRow>
+          <SettingRow label="Inspect Element"
+            desc="Open DevTools in the proxied page">
+            <button style={{
+              background:"transparent", border:"1px solid #1e2a3a", borderRadius:6,
+              color:"#94a3b8", cursor:"pointer", padding:"6px 14px",
+              fontFamily:"'Rajdhani', sans-serif", fontSize:12, fontWeight:700,
+              letterSpacing:"0.06em", textTransform:"uppercase",
+            }}>
+              OPEN DEVTOOLS
+            </button>
+          </SettingRow>
+        </Section>
+
+        <Section title="Proxy Transport">
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            {TRANSPORTS.map(t => (
+              <div key={t.id} className={`rift-transport ${transport===t.id?"selected":""}`}
+                onClick={() => setTransport(t.id)}>
+                <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
+                  <div style={{
+                    width:16, height:16, borderRadius:"50%",
+                    border:`2px solid ${transport===t.id ? accent : "#2d3f52"}`,
+                    background: transport===t.id ? `${accent}30` : "transparent",
+                    flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center",
+                  }}>
+                    {transport===t.id && <div style={{ width:6, height:6, borderRadius:"50%", background:accent }}/>}
+                  </div>
+                  <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:15, fontWeight:700,
+                    color: transport===t.id ? accent : "#94a3b8", letterSpacing:"0.04em" }}>
+                    {t.label}
+                  </span>
+                  <span className="rift-tag" style={{
+                    background: transport===t.id ? `${accent}20` : "#1e2a3a",
+                    color: transport===t.id ? accent : "#475569", marginLeft:"auto",
+                  }}>
+                    {t.badge}
+                  </span>
+                </div>
+                <p style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:12, color:"#475569",
+                  paddingLeft:26 }}>
+                  {t.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section title="Panic Key">
+          <SettingRow label="Quick Escape Shortcut"
+            desc="Press this key anywhere to instantly close RIFT and redirect to a safe page">
+            <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+              <input
+                className="rift-input"
+                maxLength={1}
+                value={localPanic}
+                onChange={e => setLocalPanic(e.target.value.slice(-1).toUpperCase())}
+                placeholder="Key"
+                style={{
+                  width:56, height:34, background:"#080b10",
+                  border:"1px solid #1e2a3a", borderRadius:6,
+                  color:"#ef4444", fontSize:16, padding:"0",
+                  fontFamily:"'JetBrains Mono', monospace",
+                  textAlign:"center", letterSpacing:"0.1em",
+                }}
+              />
+              <button className="rift-btn-primary" onClick={savePanic}
+                style={{ padding:"0 14px", height:34, borderRadius:6, fontSize:12 }}>
+                SAVE
+              </button>
+            </div>
+          </SettingRow>
+          <div style={{ marginTop:10, padding:"10px 14px", borderRadius:8,
+            background:"rgba(239,68,68,0.06)", border:"1px solid rgba(239,68,68,0.15)" }}>
+            <span style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:12, color:"#ef4444" }}>
+              ⚠ Current panic key: <strong style={{ fontFamily:"'JetBrains Mono', monospace" }}>
+                {panicKey || "not set"}
+              </strong> — hold for 0.5s or click the ✕ in the sidebar to activate.
+            </span>
+          </div>
+        </Section>
+
+        <Section title="Theme">
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(170px, 1fr))", gap:10 }}>
+            {THEMES_DATA.map(t => (
+              <div key={t.id}
+                onClick={() => setTheme(t.id)}
+                style={{
+                  background:"#080b10", border:`1px solid ${theme===t.id ? t.primary : "#1e2a3a"}`,
+                  borderRadius:8, padding:"12px 14px", cursor:"pointer",
+                  transition:"all 0.15s", boxShadow: theme===t.id ? `0 0 12px ${t.primary}22` : "none",
+                }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+                  <div style={{ width:14, height:14, borderRadius:"50%", background:t.primary, flexShrink:0 }}/>
+                  <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:13, fontWeight:700,
+                    color: theme===t.id ? t.primary : "#94a3b8", letterSpacing:"0.04em" }}>
+                    {t.label}
+                  </span>
+                  {theme===t.id && (
+                    <span className="rift-tag" style={{ background:`${t.primary}20`, color:t.primary, marginLeft:"auto" }}>
+                      ON
+                    </span>
+                  )}
+                </div>
+                <p style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:11, color:"#475569" }}>
+                  {t.note}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <div style={{ textAlign:"center", padding:"12px 0", color:"#1e2a3a" }}>
+          <span style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:11, fontWeight:700,
+            letterSpacing:"0.12em", textTransform:"uppercase" }}>
+            RIFT v1.0 — Built by Colt — AGPL-3.0
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── THEME ACCENT MAP ───────────────────────────────────────────────────── */
+const THEME_ACCENTS = {
+  "rift-dark":  "#f59e0b",
+  "neon-cyan":  "#06b6d4",
+  "blood-red":  "#ef4444",
+  "matrix":     "#22c55e",
+};
+
+/* ── ROOT APP ───────────────────────────────────────────────────────────── */
+export default function RiftDashboard() {
+  const [view, setView]         = useState("home");
+  const [transport, setTransport] = useState("uv");
+  const [theme, setTheme]       = useState("rift-dark");
+  const [proxyUrl, setProxyUrl] = useState("");
+  const [panicKey, setPanicKey] = useState("Escape");
+  const [cloak, setCloak]       = useState({ title:"", aboutBlank:false });
+
+  const accent = THEME_ACCENTS[theme] || "#f59e0b";
+  useGlobalStyles(accent);
+
+  const VIEWS = {
+    home: <HomeView accent={accent} transport={transport} setView={setView} onProxyUrl={setProxyUrl}/>,
+    browse: <BrowseView accent={accent} transport={transport} proxyUrl={proxyUrl} setProxyUrl={setProxyUrl}/>,
+    games: <GamesView accent={accent}/>,
+    apps: <AppsView accent={accent}/>,
+    settings: <SettingsView accent={accent} transport={transport} setTransport={setTransport}
+                theme={theme} setTheme={setTheme} cloak={cloak} setCloak={setCloak}
+                panicKey={panicKey} setPanicKey={setPanicKey}/>,
+  };
+
+  return (
+    <div id="rift-root" style={{
+      minHeight:"100vh",
+      background:"#080b10",
+      backgroundImage:"radial-gradient(circle, rgba(30,42,58,0.55) 1px, transparent 1px)",
+      backgroundSize:"28px 28px",
+      display:"flex",
+      fontFamily:"'Nunito Sans', system-ui, sans-serif",
+      color:"#e2e8f0",
+      overflow:"hidden",
+    }}>
+      <Sidebar view={view} setView={setView} accent={accent} panicKey={panicKey}/>
+      <div style={{ flex:1, display:"flex", flexDirection:"column", minHeight:"100vh", overflowY:"auto" }}>
+        <div style={{ height:2, background:`linear-gradient(90deg, transparent 0%, ${accent} 40%, ${accent}80 70%, transparent 100%)`, flexShrink:0 }}/>
+        {VIEWS[view]}
+      </div>
+    </div>
+  );
+}
