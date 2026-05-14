@@ -1,388 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIFT - Web Proxy</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>RIFT</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="15,1 29,15 15,29 1,15" strokeWidth="1.5"></polygon>
-    <polygon points="15,8 22,15 15,22 8,15" opacity="0.4"></polygon>
-    <line x1="15" y1="1" x2="15" y2="29" strokeWidth="0.5" opacity="0.3"></line>
-    <line x1="1" y1="15" x2="29" y2="15" strokeWidth="0.5" opacity="0.3"></line>
-    <circle cx="15" cy="15" r="2"></circle>
-  </svg>
-
-  <span>
-    RIFT
-  </span>
-
-  <div>
-    <div>
-      <svg class="rift-logo compact" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="15,1 29,15 15,29 1,15" strokeWidth="1.5"></polygon>
-        <polygon points="15,8 22,15 15,22 8,15" opacity="0.4"></polygon>
-        <line x1="15" y1="1" x2="15" y2="29" strokeWidth="0.5" opacity="0.3"></line>
-        <line x1="1" y1="15" x2="29" y2="15" strokeWidth="0.5" opacity="0.3"></line>
-        <circle cx="15" cy="15" r="2"></circle>
-      </svg>
-    </div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div title="Proxy connected">
-      <div></div>
-      <span>
-        LIVE
-      </span>
-    </div>
-    <button title="Panic — close tab">
-      ✕
-    </button>
-  </div>
-
-  <button class="rift-nav-btn">
-    <span>
-    </span>
-    <span>
-    </span>
-  </button>
-
-  <div></div>
-
-  <div>
-    <div>
-      <div>
-        <span>
-        </span>
-      </div>
-      <div></div>
-    </div>
-  </div>
-
-  <span class="rift-tag">
-  </span>
-
-  <div>
-    <span>
-      ⊙
-    </span>
-    <input class="rift-input">
-  </div>
-
-  <button class="rift-card-hover">
-    <div>
-    </div>
-    <div>
-      <div>
-      </div>
-    </div>
-  </button>
-
-  <div>
-  </div>
-
-  <span>
-    →
-  </span>
-
-  <div class="rift-anim">
-    <div>
-      <div>
-        <svg class="rift-logo" width="50" height="50" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="15,1 29,15 15,29 1,15" strokeWidth="1.5"></polygon>
-          <polygon points="15,8 22,15 15,22 8,15" opacity="0.4"></polygon>
-          <line x1="15" y1="1" x2="15" y2="29" strokeWidth="0.5" opacity="0.3"></line>
-          <line x1="1" y1="15" x2="29" y2="15" strokeWidth="0.5" opacity="0.3"></line>
-          <circle cx="15" cy="15" r="2"></circle>
-        </svg>
-      </div>
-      <p>
-        Private. Fast. Open. — by
-        <span>
-          Colt
-        </span>
-      </p>
-      <div class="rift-search-glow">
-        <div>
-          <span class="rift-tag">
-          </span>
-        </div>
-        <input class="rift-input" placeholder="Search or enter a URL to proxy...">
-        <button class="rift-btn-primary">
-          GO
-        </button>
-      </div>
-    </div>
-    <div>
-      <div>
-        <span>
-          Quick Access
-        </span>
-        <div></div>
-      </div>
-      <div>
-        <div>
-          <div>
-            <span>
-              Games
-            </span>
-            <button>
-              View all →
-            </button>
-          </div>
-          <div>
-          </div>
-        </div>
-        <div>
-          <div>
-            <span>
-              Apps
-            </span>
-            <button>
-              View all →
-            </button>
-          </div>
-          <div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <span>
-      Recent:
-    </span>
-  </div>
-
-  <button>
-  </button>
-
-  <div class="grid-card wide"></div>
-
-  <div class="grid-card wide"></div>
-
-  <div class="rift-anim">
-    <div class="top-bar">
-      <span>BROWSE</span>
-    </div>
-    <div>
-      <span>
-      </span>
-      <input class="rift-input" placeholder="Enter URL or search…">
-      <span class="rift-tag">
-      </span>
-      <button class="rift-btn-primary">
-        GO
-      </button>
-    </div>
-    <div>
-    </div>
-  </div>
-
-  <button>
-  </button>
-
-  <div></div>
-
-  <div>
-    <div>
-      ◈
-    </div>
-    <div>
-      Proxying via
-    </div>
-    <div>
-    </div>
-    <div>
-      In a live deployment, the proxied page would render here inside the RIFT service worker.
-    </div>
-  </div>
-
-  <div>
-    <div>
-      ◈
-    </div>
-    <div>
-      No active session
-    </div>
-    <div>
-      Enter a URL above to start browsing
-    </div>
-  </div>
-
-  <div class="rift-anim">
-    <div class="top-bar">
-      <span>GAMES</span>
-      <div>
-        <input class="search-bar" placeholder="Search games…">
-      </div>
-    </div>
-    <div>
-    </div>
-  </div>
-
-  <button>
-  </button>
-
-  <div>
-    <div>
-      ◯
-    </div>
-    <div>
-      No results
-    </div>
-  </div>
-
-  <div>
-  </div>
-
-  <div class="grid-card"></div>
-
-  <div class="rift-anim">
-    <div class="top-bar">
-      <span>APPS</span>
-      <div>
-        <input class="search-bar" placeholder="Search apps…">
-      </div>
-    </div>
-    <div>
-      <div>
-      </div>
-    </div>
-  </div>
-
-  <div class="grid-card"></div>
-
-  <div>
-    <div>
-      ◯
-    </div>
-    <div>
-      No results
-    </div>
-  </div>
-
-  <div>
-    <div>
-      <span>
-      </span>
-      <div></div>
-    </div>
-  </div>
-
-  <div>
-    <div>
-      <div>
-      </div>
-    </div>
-  </div>
-
-  <div>
-  </div>
-
-  <div class="rift-anim">
-    <div class="top-bar">
-      <span>SETTINGS</span>
-    </div>
-    <div>
-      <section class="rift-section" title="Tab Cloaking">
-        <div class="setting-row">
-          <label for="cloak-toggle">About:Blank Cloaking</label>
-          <p>Opens proxy in an about:blank window to hide the URL</p>
-          <input id="cloak-toggle" type="checkbox" class="rift-cloak-toggle">
-        </div>
-        <div class="setting-row">
-          <label>Custom Tab Title</label>
-          <p>Override the browser tab title to disguise the page</p>
-          <div>
-            <input class="rift-input" placeholder="e.g. Google Classroom">
-            <button class="rift-btn-primary">
-              APPLY
-            </button>
-          </div>
-        </div>
-        <div class="setting-row">
-          <label>Inspect Element</label>
-          <p>Open DevTools in the proxied page</p>
-          <button>
-            OPEN DEVTOOLS
-          </button>
-        </div>
-      </section>
-      <section class="rift-section" title="Proxy Transport">
-        <div>
-        </div>
-      </section>
-      <section class="rift-section" title="Panic Key">
-        <div class="setting-row">
-          <label>Quick Escape Shortcut</label>
-          <p>Press this key anywhere to instantly close RIFT and redirect to a safe page</p>
-          <div>
-            <input class="rift-input" placeholder="Key">
-            <button class="rift-btn-primary">
-              SAVE
-            </button>
-          </div>
-        </div>
-        <div>
-          <span>
-            ⚠ Current panic key:
-            <strong>
-            </strong>
-            — hold for 0.5s or click the ✕ in the sidebar to activate.
-          </span>
-        </div>
-      </section>
-      <section class="rift-section" title="Theme">
-        <div>
-        </div>
-      </section>
-      <div>
-        <span>
-          RIFT v1.0 — Built by Colt — AGPL-3.0
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <div>
-      <div>
-      </div>
-      <span>
-      </span>
-      <span class="rift-tag">
-      </span>
-    </div>
-    <p>
-    </p>
-  </div>
-
-  <div></div>
-
-  <div>
-    <div>
-      <div></div>
-      <span>
-      </span>
-    </div>
-    <p>
-    </p>
-  </div>
-
-  <span class="rift-tag">
-    ON
-  </span>
 
   <div id="rift-root">
-    <div class="sidebar"></div>
-    <div>
-      <div></div>
-    </div>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-logo" onclick="showHome()" title="RIFT Home">
+          <svg width="28" height="28" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="15,1 29,15 15,29 1,15" stroke-width="1.5"/>
+            <polygon points="15,8 22,15 15,22 8,15" opacity="0.4"/>
+            <line x1="15" y1="1" x2="15" y2="29" stroke-width="0.5" opacity="0.3"/>
+            <line x1="1" y1="15" x2="29" y2="15" stroke-width="0.5" opacity="0.3"/>
+            <circle cx="15" cy="15" r="2"/>
+          </svg>
+          <span class="sidebar-wordmark">RIFT</span>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <button class="nav-btn active" id="nav-home" onclick="showHome()" title="Home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 9.5L12 3l9 6.5V21a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+            <path d="M9 22V12h6v10"/>
+          </svg>
+          <span>Home</span>
+        </button>
+
+        <button class="nav-btn" id="nav-browse" onclick="showBrowse()" title="Browse">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
+          </svg>
+          <span>Browse</span>
+        </button>
+
+        <button class="nav-btn" id="nav-games" onclick="showGames()" title="Games">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="6" width="20" height="12" rx="3"/>
+            <path d="M6 12h4M8 10v4M15 11h2M15 13h2"/>
+          </svg>
+          <span>Games</span>
+        </button>
+
+        <button class="nav-btn" id="nav-apps" onclick="showApps()" title="Apps">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          <span>Apps</span>
+        </button>
+
+        <button class="nav-btn" id="nav-settings" onclick="showSettings()" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <span>Settings</span>
+        </button>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="live-indicator" title="Proxy connected">
+          <div class="live-dot"></div>
+          <span>LIVE</span>
+        </div>
+        <button class="panic-btn" id="panic-btn" onclick="panicClose()" title="Panic — close tab">✕</button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- HOME VIEW -->
+      <div id="view-home" class="view rift-anim active">
+        <div class="home-hero">
+          <svg class="hero-logo" width="64" height="64" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="15,1 29,15 15,29 1,15" stroke-width="1.5"/>
+            <polygon points="15,8 22,15 15,22 8,15" opacity="0.4"/>
+            <line x1="15" y1="1" x2="15" y2="29" stroke-width="0.5" opacity="0.3"/>
+            <line x1="1" y1="15" x2="29" y2="15" stroke-width="0.5" opacity="0.3"/>
+            <circle cx="15" cy="15" r="2"/>
+          </svg>
+          <h1 class="hero-title">RIFT</h1>
+          <p class="hero-sub">Private. Fast. Open. <span class="by-colt">— by Colt</span></p>
+
+          <div class="search-box">
+            <div class="search-tags">
+              <span class="rift-tag">UV</span>
+              <span class="rift-tag">Scramjet</span>
+            </div>
+            <div class="search-row">
+              <input id="home-search" class="rift-input" placeholder="Search or enter a URL to proxy…" autocomplete="off">
+              <button class="rift-btn-primary" onclick="proxySearch()">GO</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-quick">
+          <div class="section-header">
+            <span class="section-title">Quick Access</span>
+            <div class="section-line"></div>
+          </div>
+          <div class="quick-grid">
+            <div class="quick-card" onclick="showGames()">
+              <div class="quick-card-header">
+                <span class="quick-card-title">Games</span>
+                <button class="view-all-btn">View all →</button>
+              </div>
+              <div class="quick-card-empty">No games added yet</div>
+            </div>
+            <div class="quick-card" onclick="showApps()">
+              <div class="quick-card-header">
+                <span class="quick-card-title">Apps</span>
+                <button class="view-all-btn">View all →</button>
+              </div>
+              <div class="quick-card-empty">No apps added yet</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="recent-bar" id="recent-bar">
+          <span class="recent-label">Recent:</span>
+          <div class="recent-list" id="recent-list"></div>
+        </div>
+      </div>
+
+      <!-- BROWSE VIEW -->
+      <div id="view-browse" class="view rift-anim">
+        <div class="top-bar">
+          <span>BROWSE</span>
+        </div>
+        <div class="browse-search-row">
+          <input id="browse-search" class="rift-input" placeholder="Enter URL or search…" autocomplete="off">
+          <button class="rift-btn-primary" onclick="proxySearch()">GO</button>
+        </div>
+        <div class="browse-content" id="browse-content">
+          <div class="browse-placeholder">
+            <div class="status-dot idle"></div>
+            <div class="status-label">No active session</div>
+            <div class="status-sub">Enter a URL above to start browsing</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAMES VIEW -->
+      <div id="view-games" class="view rift-anim">
+        <div class="top-bar">
+          <span>GAMES</span>
+          <input class="rift-input search-bar" id="games-search" placeholder="Search games…">
+        </div>
+        <div class="grid-area" id="games-grid">
+          <div class="empty-state">
+            <div class="empty-icon">◯</div>
+            <div class="empty-label">No games yet</div>
+            <div class="empty-sub">Games will appear here once added</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPS VIEW -->
+      <div id="view-apps" class="view rift-anim">
+        <div class="top-bar">
+          <span>APPS</span>
+          <input class="rift-input search-bar" id="apps-search" placeholder="Search apps…">
+        </div>
+        <div class="grid-area" id="apps-grid">
+          <div class="empty-state">
+            <div class="empty-icon">◯</div>
+            <div class="empty-label">No apps yet</div>
+            <div class="empty-sub">Apps will appear here once added</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS VIEW -->
+      <div id="view-settings" class="view rift-anim">
+        <div class="top-bar">
+          <span>SETTINGS</span>
+        </div>
+        <div class="settings-body">
+
+          <section class="rift-section">
+            <div class="section-heading">Tab Cloaking</div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <label for="cloak-toggle">About:Blank Cloaking</label>
+                <p>Opens proxy in an about:blank window to hide the URL</p>
+              </div>
+              <input id="cloak-toggle" type="checkbox" class="rift-toggle">
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <label>Custom Tab Title</label>
+                <p>Override the browser tab title to disguise the page</p>
+              </div>
+              <div class="setting-control">
+                <input id="custom-title-input" class="rift-input" placeholder="e.g. Google Classroom">
+                <button class="rift-btn-primary" onclick="applyCustomTitle()">APPLY</button>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <label>Inspect Element</label>
+                <p>Open DevTools in the proxied page</p>
+              </div>
+              <button class="rift-btn-secondary" onclick="openDevTools()">OPEN DEVTOOLS</button>
+            </div>
+          </section>
+
+          <section class="rift-section">
+            <div class="section-heading">Proxy Transport</div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <label>Transport Method</label>
+                <p>Choose the proxy transport engine</p>
+              </div>
+              <select class="rift-select" id="transport-select">
+                <option value="uv">Ultraviolet</option>
+                <option value="scramjet">Scramjet</option>
+                <option value="epoxy">Epoxy</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="rift-section">
+            <div class="section-heading">Panic Key</div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <label>Quick Escape Shortcut</label>
+                <p>Press this key anywhere to instantly close RIFT</p>
+              </div>
+              <div class="setting-control">
+                <input id="panic-key-input" class="rift-input small" placeholder="Key" readonly>
+                <button class="rift-btn-secondary" onclick="capturePanicKey()">SET KEY</button>
+                <button class="rift-btn-primary" onclick="savePanicKey()">SAVE</button>
+              </div>
+            </div>
+            <div class="panic-note" id="panic-note">
+              ⚠ Current panic key: <strong id="panic-key-display">Escape</strong> — hold for 0.5s or click ✕ in the sidebar to activate.
+            </div>
+          </section>
+
+          <div class="settings-footer">
+            RIFT v1.0 — Built by Colt — AGPL-3.0
+          </div>
+        </div>
+      </div>
+
+    </main>
   </div>
 
   <script src="rift.js"></script>
