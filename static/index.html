@@ -77,10 +77,20 @@
     }
     .rift-transport:hover { border-color: #2d3f52; }
     .rift-transport.selected { border-color: var(--accent); background: var(--accent-glow); }
+    iframe { border: none; width: 100%; height: 100%; }
   </style>
 </head>
 <body>
   <div id="rift-root"></div>
+
+  <!-- Ultraviolet Service Worker -->
+  <script src="/uv/uv.bundle.js"></script>
+  <script src="/uv/uv.config.js"></script>
+  <script>
+    if (!navigator.serviceWorker.controller) {
+      navigator.serviceWorker.register("/uv/sw.js", { scope: "/uv/" });
+    }
+  </script>
 
   <!-- React from CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -558,11 +568,12 @@
       );
     }
 
-    // BrowseView
+    // BrowseView - NOW WITH WORKING IFRAME PROXY
     function BrowseView({ accent, transport, proxyUrl, setProxyUrl }) {
       const [inputUrl, setInputUrl] = useState(proxyUrl || "");
       const [loading, setLoading] = useState(false);
       const [secure, setSecure] = useState(proxyUrl?.startsWith("https://") || false);
+      const iframeRef = useRef();
 
       const navigate = () => {
         let clean = inputUrl.trim();
@@ -637,17 +648,12 @@
               }}/>
             )}
             {proxyUrl ? (
-              <div style={{ textAlign:"center", padding:40 }}>
-                <div style={{ fontSize:48, marginBottom:16 }}>◈</div>
-                <div style={{ fontFamily:"'Rajdhani', sans-serif", fontSize:18, fontWeight:600,
-                  color:"#e2e8f0", marginBottom:8 }}>Proxying via {transport.toUpperCase()}</div>
-                <div style={{ fontFamily:"'JetBrains Mono', monospace", fontSize:13, color:accent, marginBottom:16 }}>
-                  {proxyUrl}
-                </div>
-                <div style={{ fontFamily:"'Nunito Sans', sans-serif", fontSize:13, color:"#475569", maxWidth:360 }}>
-                  In a live deployment, the proxied page would render here inside the RIFT service worker.
-                </div>
-              </div>
+              <iframe
+                ref={iframeRef}
+                src={`/uv/route?url=${encodeURIComponent(proxyUrl)}`}
+                style={{ width:"100%", height:"100%", border:"none" }}
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock"
+              />
             ) : (
               <div style={{ textAlign:"center", color:"#2d3f52" }}>
                 <div style={{ fontSize:56, marginBottom:12, opacity:0.5 }}>◈</div>
