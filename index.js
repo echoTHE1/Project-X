@@ -2,6 +2,7 @@ import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import { createBareServer } from "@nebula-services/bare-server-node";
+import { createServer as createUltravioletServer } from "@titaniumnetwork-dev/ultraviolet";
 import chalk from "chalk";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -20,6 +21,7 @@ const __dirname = process.cwd();
 const server = http.createServer();
 const app = express();
 const bareServer = createBareServer("/ca/");
+const uvServer = createUltravioletServer();
 const { baremuxPath } = bareMuxNode;
 const epoxyDistPath = path.join(
   __dirname,
@@ -119,6 +121,10 @@ app.use("/ca", cors({ origin: true }));
 app.use("/bm", express.static(baremuxPath, transportStaticOptions));
 app.use("/ep", express.static(epoxyDistPath, transportStaticOptions));
 
+// Ultraviolet routing
+app.use("/uv/", uvServer.middleware());
+app.use("/uv/", express.static(uvServer.publicPath(), transportStaticOptions));
+
 const routes = [
   { path: "/b", file: "apps.html" },
   { path: "/a", file: "games.html" },
@@ -145,7 +151,9 @@ app.use((err, req, res, next) => {
 });
 
 server.on("request", (req, res) => {
-  if (bareServer.shouldRoute(req)) {
+  if (uvServer.shouldRoute(req)) {
+    uvServer.routeRequest(req, res);
+  } else if (bareServer.shouldRoute(req)) {
     bareServer.routeRequest(req, res);
   } else {
     app(req, res);
@@ -153,7 +161,9 @@ server.on("request", (req, res) => {
 });
 
 server.on("upgrade", (req, socket, head) => {
-  if (bareServer.shouldRoute(req)) {
+  if (uvServer.shouldRoute(req)) {
+    uvServer.routeUpgrade(req, socket, head);
+  } else if (bareServer.shouldRoute(req)) {
     bareServer.routeUpgrade(req, socket, head);
   } else {
     wisp.routeRequest(req, socket, head);
@@ -162,6 +172,8 @@ server.on("upgrade", (req, socket, head) => {
 
 server.on("listening", () => {
   console.log(chalk.green(`🌍 Server is running on http://localhost:${PORT}`));
+  console.log(chalk.cyan("🔗 RIFT Dashboard: http://localhost:${PORT}"));
+  console.log(chalk.yellow("📡 Ultraviolet Proxy: http://localhost:${PORT}/uv/"));
 });
 
 server.listen({ port: PORT });
